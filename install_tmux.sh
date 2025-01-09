@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 # * Branch: MakeChangesHere <
 
-# Last modified: 2023/06/04 15:11:02
+# Last modified: 2025/01/08 20:20:44
 
 # * NO warrenties are implied by this script, use of script is at your own RISK.
 	# AKA Read and use VM to test script before using it on a system.
@@ -257,6 +257,7 @@ echo ""
 
 sleep 10s
 
+# Ubuntu
 if   [[ "$CurOSstr" == *"Ubuntu"* ]]; then
 	echo "Ubuntu, verifying environment!  If this passes no need to sudo install apps"
 	echo
@@ -280,13 +281,28 @@ if   [[ "$CurOSstr" == *"Ubuntu"* ]]; then
 	sudo -k
 	# dpkg -s libssl-dev
 
-
+# CentOS
 elif [[ "$CurOSstr" == *"Centos"* ]]; then
 	echo "Verifying Centos environment"
 	echo "install openssl-devel"
 	#rpm -qa | grep openssl-devel
 
 
+# Rocky
+elif [[ "$CurOSstr" == *"Rocky"* ]]; then
+	echo "Verifying Centos environment"
+	echo "install openssl-devel"
+	
+	echo ""
+	
+	echo "Installing Automake autoconf libtool"
+	sudo dnf install automake autoconf libtool
+	yum groupinstall "Development Tools"
+
+	#rpm -qa | grep openssl-devel
+
+
+# Red Hat
 elif [[ "$CurOSstr" == *"Red Hat Enterprise Linux"* ]]; then
 	echo "Verifying Red Hat environment"
 	echo "Verifying openssl-devel"
@@ -296,19 +312,19 @@ elif [[ "$CurOSstr" == *"Red Hat Enterprise Linux"* ]]; then
 	# TODO https://dvtalk.me/2020/07/23/install-tmux-without-root-and-internet-access/
 
 
-
+# Arch
 elif [[ "$CurOSstr" == *"Arch"* ]]; then
 	echo "Verifying Arch environment"
 	echo "Verifying openssl"
 	#pacman -Qi openssl
 
-
+# Raspberry Pi
 elif [[ "$CurOSstr" == *"Buster"* ]]; then
 	echo "Verifying Raspberry Pi Buster environment"
 	echo "Verifying libssl-dev"
 	# dpkg -s libssl-dev
 
-
+# Raspberry Pi
 elif [[ "$CurOSstr" == *"Stretch"* ]]; then
 	echo "Verifying Raspberry Pi Stretch environment"
 	echo "Verifying libssl-dev"
@@ -598,9 +614,11 @@ if [[ $SysWide == "yes" ]]; then
 	make install
 else
 	sh ./autogen.sh
-	./configure CFLAGS="-I$HOME/local/tmux${TMUX_VERSION}/include -I$HOME/local/tmux${TMUX_VERSION}/include/ncurses" LDFLAGS="-L$HOME/local/tmux${TMUX_VERSION}/lib -L$HOME/local/tmux${TMUX_VERSION}/include/ncurses -L$HOME/local/tmux${TMUX_VERSION}/include" CPPFLAGS="-I$HOME/local/tmux${TMUX_VERSION}/include -I$HOME/local/tmux${TMUX_VERSION}/include/ncurses" LDFLAGS="-static -L$HOME/local/tmux${TMUX_VERSION}/include -L$HOME/local/tmux${TMUX_VERSION}/include/ncurses -L$HOME/local/tmux${TMUX_VERSION}/lib" 
+	# ./configure CFLAGS="-I$HOME/local/tmux${TMUX_VERSION}/include -I$HOME/local/tmux${TMUX_VERSION}/include/ncurses" LDFLAGS="-L$HOME/local/tmux${TMUX_VERSION}/lib -L$HOME/local/tmux${TMUX_VERSION}/include/ncurses -L$HOME/local/tmux${TMUX_VERSION}/include" CPPFLAGS="-I$HOME/local/tmux${TMUX_VERSION}/include -I$HOME/local/tmux${TMUX_VERSION}/include/ncurses" LDFLAGS="-static -L$HOME/local/tmux${TMUX_VERSION}/include -L$HOME/local/tmux${TMUX_VERSION}/include/ncurses -L$HOME/local/tmux${TMUX_VERSION}/lib" 
+	./configure --prefix=$HOME/local/tmux${TMUX_VERSION}
 
 	make -j
+	make install
 
 # TODO make directory ~/local/tmux${TMUX_VERSION}/bin/tmux${TMUX_VERSION}
 	# cp -f tmux $HOME/local/bin/tmux${TMUX_VERSION}
